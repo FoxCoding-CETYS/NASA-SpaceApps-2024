@@ -2,16 +2,12 @@
 import Image from "next/image";
 import Sidebar from "../components/ui/sidebar";
 import TopBar from "../components/ui/topbar";
-import NavbarTop from "../components/ui/NavbarTop";
 import {Button} from '@nextui-org/button'
 import React from "react";
 
 export default function Home() {
   return (
     <>
-      <div className="w-screen">
-        <NavbarTop/>
-      </div>
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* TopBar for mobile */}
         <div className="md:hidden">
