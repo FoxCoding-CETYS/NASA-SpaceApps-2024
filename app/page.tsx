@@ -31,10 +31,10 @@ export default function LandingPage() {
               />
               <div className="flex space-x-4 text-sm text-white items-center justify-center">
                 <Link href="#about" className="hover:text-green-300">About</Link>
-                <Link href="#" className="hover:text-green-300">
-                    <Button className="bg-green-700 text-white">
-                        Sign in
-                    </Button>
+                <Link href="/dashboard" className="hover:text-green-300">
+                  <Button className="bg-green-700 text-white rounded-full">
+                    Sign in
+                  </Button>
                 </Link>
               </div>
             </nav>
@@ -47,9 +47,11 @@ export default function LandingPage() {
               <p className="text-xl sm:text-2xl md:text-3xl mb-8">
                 Precision farming with real-time insights
               </p>
-              <Button size="lg" className="bg-white text-green-900 hover:bg-green-100">
-                Get the experience
-              </Button>
+              <Link href='/dashboard'>
+                <Button size="lg" className="bg-white text-green-900 rounded-full hover:bg-green-100">
+                  Get the experience
+                </Button>
+              </Link>
             </div>
           </main>
         </div>
