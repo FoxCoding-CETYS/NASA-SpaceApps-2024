@@ -4,18 +4,32 @@ import { Bell, Search, ChevronDown, Droplets, Cloud, Bug, Leaf, BarChart2, Zap }
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import ScaledEviPredictionChart from "@/components/scaled-evi-prediction-chart"
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+
+const chartData = [
+  { month: "January", desktop: 186 },
+  { month: "February", desktop: 305 },
+  { month: "March", desktop: 237 },
+  { month: "April", desktop: 73 },
+  { month: "May", desktop: 209 },
+  { month: "June", desktop: 214 },
+]
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig
 
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource"; // Your generated schema
@@ -254,9 +268,10 @@ export default function FarmerDashboard() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-              </CardFooter>
             </Card>
+            <div className='w-full flex justify-center'>
+              <ScaledEviPredictionChart />
+            </div>
           </div>
         </main>
       </div>
