@@ -26,7 +26,6 @@ const schema = a.schema({
     .model({
       latitude: a.float(),        // Latitude
       longitude: a.float(),       // Longitude
-      zipCode: a.string(),        // Zip code
     })
     .authorization((allow) => [
       allow.owner().to(['create', 'read', 'update', 'delete']) // Only the owner can CRUD the settings

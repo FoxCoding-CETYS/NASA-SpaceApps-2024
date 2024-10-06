@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import { Input } from "@nextui-org/input";
-
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource"; // Your generated schema
 import { Button } from "@nextui-org/react";
@@ -17,10 +16,10 @@ export default function Preferences() {
     const [settings, setSettings] = useState({
         latitude: "",
         longitude: "",
-        zipCode: "",
     });
     const [loading, setLoading] = useState(false);
     const [userSettingsId, setUserSettingsId] = useState<string | null>(null);
+    const [locationLoading, setLocationLoading] = useState(false);
 
 
     useEffect(() => {
@@ -34,7 +33,6 @@ export default function Preferences() {
                     setSettings({
                         latitude: userSettings.latitude?.toString() || "",
                         longitude: userSettings.longitude?.toString() || "",
-                        zipCode: userSettings.zipCode?.toString() || "",
                     });
                     setUserSettingsId(userSettings.id); // Store the ID for updating later
                 }
@@ -65,7 +63,6 @@ export default function Preferences() {
             const settingsPayload = {
                 latitude: parseFloat(settings.latitude), // Convert string to float
                 longitude: parseFloat(settings.longitude), // Convert string to float
-                zipCode: settings.zipCode, // This can stay as a string
             };
             if (userSettingsId) {
                 // If settings exist, update them
@@ -82,7 +79,6 @@ export default function Preferences() {
                 await client.models.UserSettings.create({
                     latitude: parseFloat(settings.latitude),
                     longitude: parseFloat(settings.longitude),
-                    zipCode: settings.zipCode,
                 });
                 toast({
                     title: "Created",
@@ -93,6 +89,36 @@ export default function Preferences() {
             console.error("Error saving settings", error);
         }
     };
+
+    const handleUseCurrentLocation = () => {
+        setLocationLoading(true)
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setSettings((prevSettings) => ({
+                        ...prevSettings,
+                        latitude: latitude.toString(),
+                        longitude: longitude.toString(),
+                    }));
+                },
+                (error) => {
+                    console.error("Error getting location", error);
+                    toast({
+                        title: "Location Error",
+                        description: "Unable to access your location.",
+                    });
+                }
+            );
+        } else {
+            toast({
+                title: "Geolocation Not Supported",
+                description: "Your browser does not support geolocation.",
+            });
+        }
+        setLocationLoading(false)
+    };
+
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen w-full">
@@ -123,17 +149,10 @@ export default function Preferences() {
                                     placeholder="Longitude"
                                 />
                             </div>
-                            <div className="flex flex-col sm:flex-row items-center">
-                                <label className="w-full sm:w-1/3 text-left mb-2 sm:mb-0">Zip Code</label>
-                                <Input
-                                    className="w-full sm:w-2/3"
-                                    type="number"
-                                    name="zipCode"
-                                    value={settings.zipCode}
-                                    onChange={handleChange}
-                                    placeholder="3489023"
-                                />
-                            </div>
+                            <Button className="mt-8 mx-4" onClick={handleUseCurrentLocation} isLoading={locationLoading}>
+                                Use Current Location
+                            </Button>
+
                             <Button
                                 className="mt-8"
                                 onClick={handleSave}
