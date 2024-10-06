@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, LayoutDashboard, FileText, Settings, LogOut } from "lucide-react"
@@ -12,8 +12,26 @@ interface SidebarProps {
 }
 
 const CollapsibleSidebar: React.FC<SidebarProps> = ({ signOut }) => {
+  // Collapsed state
   const [isCollapsed, setIsCollapsed] = useState(false)
 
+  // Collapse sidebar by default on small screens
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) { // Tailwind's 'md' breakpoint
+        setIsCollapsed(true)
+      } else {
+        setIsCollapsed(false)
+      }
+    }
+
+    handleResize() // Initial check
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Toggle the sidebar
   const toggleSidebar = () => setIsCollapsed(!isCollapsed)
 
   const menuItems = [
@@ -37,7 +55,7 @@ const CollapsibleSidebar: React.FC<SidebarProps> = ({ signOut }) => {
           <Image
             src={LogoL}
             alt="Tractor Icon"
-            width={160} // Mantén un tamaño fijo cuando está visible
+            width={160} // Fixed size when visible
             height={80}
             className="mb-2"
           />
