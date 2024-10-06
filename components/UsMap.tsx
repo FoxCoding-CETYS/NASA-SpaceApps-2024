@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import { geoAlbersUsa, geoCentroid } from 'd3-geo';
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  ProjectionConfig,
+} from 'react-simple-maps';
+import { geoCentroid } from 'd3-geo';
 import { json } from 'd3-fetch';
 import * as topojson from 'topojson-client';
 import {
@@ -12,7 +17,6 @@ import {
 import {
   Topology,
   GeometryCollection,
-  Objects,
 } from 'topojson-specification';
 
 interface CountyData {
@@ -27,20 +31,9 @@ interface CountyTopology extends Topology {
   };
 }
 
+const usaUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json';
 
-interface GeoFeature {
-  type: string;
-  geometry: Geometry;
-  properties: {
-    name: string;
-    [key: string]: any;
-  };
-  id: string | number;
-}
-
-const usaUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json";
-
-// Función para mapear el valor EVI a un color RGB
+// Function to map EVI value to an RGB color
 const getColorFromEvi = (evi: number): string => {
   const red = Math.max(0, 255 * (1 - evi));
   const green = Math.max(0, 255 * (1 + evi));
@@ -52,12 +45,12 @@ export default function USMap() {
   const [countyData, setCountyData] = useState<CountyData[]>([]);
   const [selectedCounty, setSelectedCounty] = useState<{ name: string; evi: number | null } | null>(null);
 
-  // Cargar datos del archivo modisData.json de manera asíncrona
+  // Asynchronously load data from modisData.json
   const fetchCountyData = async (): Promise<void> => {
     try {
-      const response = await fetch('/modisData.json'); // Fetch desde public
+      const response = await fetch('/modisData.json'); // Fetch from public
       if (!response.ok) {
-        throw new Error('Error al cargar los datos');
+        throw new Error('Error loading data');
       }
       const data: CountyData[] = await response.json();
       setCountyData(data);
@@ -70,7 +63,7 @@ export default function USMap() {
     fetchCountyData();
   }, []);
 
-  // Cargar los datos geográficos de los condados
+  // Load geographic data of the counties
   useEffect(() => {
     json<CountyTopology>(usaUrl)
       .then((topology) => {
@@ -78,14 +71,13 @@ export default function USMap() {
           console.error('Topology is undefined');
           return;
         }
-  
+
         const geojson = topojson.feature(
           topology,
           topology.objects.counties
-        ) as
-          | FeatureCollection<Geometry, GeoJsonProperties>
-          | Feature<Geometry, GeoJsonProperties>;
-  
+        ) as Feature<Geometry, GeoJsonProperties> | FeatureCollection<Geometry, GeoJsonProperties>;
+        
+
         if (geojson.type === 'FeatureCollection') {
           setGeoData(geojson.features);
         } else if (geojson.type === 'Feature') {
@@ -98,9 +90,8 @@ export default function USMap() {
         console.error('Error loading geography data:', error);
       });
   }, []);
-  
 
-  // Obtener el valor EVI según las coordenadas del condado
+  // Get the EVI value based on the county's coordinates
   const getEviForCounty = (geo: Feature<Geometry, GeoJsonProperties>): number | null => {
     const [longitude, latitude] = geoCentroid(geo);
 
@@ -114,30 +105,20 @@ export default function USMap() {
     return county ? county.evi : null;
   };
 
-  // Manejar el clic en un condado
-
+  // Handle click on a county
   const handleClick = (geo: Feature<Geometry, GeoJsonProperties>): void => {
     const evi = getEviForCounty(geo);
-  
-    if (geo.properties && geo.properties.name) {
-      setSelectedCounty({
-        name: geo.properties.name,
-        evi: evi,
-      });
-    } else {
-      setSelectedCounty({
-        name: 'Unknown',
-        evi: evi,
-      });
-    }
+    setSelectedCounty({
+      name: geo.properties?.name ?? 'Unknown',
+      evi: evi,
+    });
   };
-  
 
   return (
     <div>
       <h2>United States Map</h2>
 
-      {/* Mostrar el nombre del condado seleccionado y su EVI */}
+      {/* Display the selected county's name and EVI */}
       {selectedCounty && (
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <h3>{selectedCounty.name}</h3>
@@ -145,21 +126,21 @@ export default function USMap() {
         </div>
       )}
 
-        <ComposableMap
-          width={870}
-          height={500}
-          className="w-full h-full"
-          projection="geoAlbersUsa"
-          projectionConfig={{
-            scale: 1000,
-            center: [-97, 38], // Adjust as needed
-          }}
-        >
-        <Geographies geography={usaUrl}>
+      <ComposableMap
+        width={870}
+        height={500}
+        className="w-full h-full"
+        projection="geoAlbersUsa"
+        projectionConfig={{
+          scale: 1000,
+          center: [-97, 38], // Adjust as needed
+        }}
+      >
+        <Geographies geography={geoData}>
           {({ geographies }) =>
             geographies.map((geo) => {
               const evi = getEviForCounty(geo);
-              const fillColor = evi !== null ? getColorFromEvi(evi) : "#D6D6DA";
+              const fillColor = evi !== null ? getColorFromEvi(evi) : '#D6D6DA';
 
               return (
                 <Geography
@@ -168,15 +149,15 @@ export default function USMap() {
                   style={{
                     default: {
                       fill: fillColor,
-                      outline: "none",
+                      outline: 'none',
                     },
                     hover: {
-                      fill: "#F53",
-                      outline: "none",
+                      fill: '#F53',
+                      outline: 'none',
                     },
                     pressed: {
-                      fill: "#E42",
-                      outline: "none",
+                      fill: '#E42',
+                      outline: 'none',
                     },
                   }}
                   onClick={() => handleClick(geo)}
@@ -187,7 +168,7 @@ export default function USMap() {
         </Geographies>
       </ComposableMap>
 
-      {/* Espectro de colores para el EVI */}
+      {/* EVI color spectrum */}
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
         <div
           style={{
@@ -198,7 +179,14 @@ export default function USMap() {
             borderRadius: '5px',
           }}
         />
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%', margin: '10px auto' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '80%',
+            margin: '10px auto',
+          }}
+        >
           <span>-1</span>
           <span>0</span>
           <span>1</span>
