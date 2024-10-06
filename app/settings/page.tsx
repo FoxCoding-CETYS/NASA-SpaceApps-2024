@@ -1,16 +1,14 @@
-import Sidebar from "../../components/ui/sidebar";
-import TopBar from "../../components/ui/topbar";
 import React from "react";
-import {Input} from "@nextui-org/input";
+import { Input } from "@nextui-org/input";
 
-interface user{
+interface user {
     name: string,
     email: string,
     password: string,
     zipcode: number
 }
 
-export default function Settings () {
+export default function Settings() {
 
     const newUser: user = {
         name: "John Doe",
@@ -18,21 +16,11 @@ export default function Settings () {
         password: "securePassword123",
         zipcode: 12345
     };
-    
-    return(
+
+    return (
         <>
-            <div className="flex flex-col md:flex-row min-h-screen">
-            {/* TopBar for mobile */}
-                <div className="md:hidden z-20">
-                <TopBar />
-                </div>
-
-            {/* Sidebar Component */}
-                <div className="hidden md:flex md:flex-col md:w-64 h-full">
-                <Sidebar />
-                </div>
-
-            {/* Main Content */}
+            <div className="flex flex-col md:flex-row min-h-screen w-full">
+                {/* Main Content */}
                 <div className="z-10 flex-1 p-8 sm:p-20 bg-[#f0f4f8] flex flex-col items-center text-center text-gray-800">
                     <div className="bg-white w-full max-w-2xl p-8 rounded-lg shadow-lg">
                         <h1 className="text-3xl font-semibold mb-6">Settings</h1>

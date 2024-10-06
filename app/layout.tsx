@@ -4,7 +4,6 @@ import { Providers } from "./providers";
 import "./globals.css";
 import { Playfair_Display} from "next/font/google"; 
 
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -33,7 +32,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className='dark'>
+    <html lang="en" className=''>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased ${greatVibes.variable}`}
       >
@@ -41,7 +40,7 @@ export default async function RootLayout({
           {children}
         </Providers>
       </body>
-    </html>
+    </html >
   )
 }
 
