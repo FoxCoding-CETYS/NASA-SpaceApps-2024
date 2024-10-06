@@ -17,9 +17,9 @@ const CollapsibleSidebar: React.FC<SidebarProps> = ({ signOut }) => {
   const toggleSidebar = () => setIsCollapsed(!isCollapsed)
 
   const menuItems = [
-    { href: '/', icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard' },
+    { href: '/dashboard', icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard' },
     { href: '/logs', icon: <FileText className="h-5 w-5" />, label: 'Logs' },
-    { href: '/settings', icon: <Settings className="h-5 w-5" />, label: 'Settings' },
+    { href: '/preferences', icon: <Settings className="h-5 w-5" />, label: 'Preferences' },
   ]
 
   return (
