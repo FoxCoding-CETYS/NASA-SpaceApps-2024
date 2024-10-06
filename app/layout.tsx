@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Providers } from "./providers";
 import "./globals.css";
-import CollapsibleSidebar from "@/components/collapsible-sidebar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,20 +30,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {/* <CollapsibleSidebar/>
-          <main className="flex-1">
-            {/* Main content goes here 
           {children}
-        </main>
-         */}
-
-          <div className="flex h-screen flex-nowrap">
-            <CollapsibleSidebar />
-            <main className="flex-1 min-w-0 h-full overflow-auto">
-              {/* Main content goes here */}
-              {children}
-            </main>
-          </div>
         </Providers>
       </body>
     </html >

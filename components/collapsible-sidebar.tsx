@@ -5,9 +5,14 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, LayoutDashboard, FileText, Settings, LogOut } from "lucide-react"
 import LogoT from '../app/assets/tractor.png'
 import LogoL from '../app/assets/letters-short.png'
+import Link from 'next/link'
 
 
-export default function CollapsibleSidebar() {
+interface sidebarProps {
+  signOut: () => void;
+}
+
+const CollapsibleSidebar: React.FC<sidebarProps> = ({ signOut }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed)
@@ -39,26 +44,34 @@ export default function CollapsibleSidebar() {
         <ul className="space-y-2 px-2">
           <li>
             <Button variant="ghost" className={`w-full justify-start ${isCollapsed ? 'px-2' : 'px-4'}`}>
-              <LayoutDashboard className="h-5 w-5" />
-              {!isCollapsed && <span className="ml-2">Dashboard</span>}
+              <Link href="/">
+                <LayoutDashboard className="h-5 w-5" />
+                {!isCollapsed && <span className="ml-2">Dashboard</span>}
+              </Link>
             </Button>
           </li>
           <li>
             <Button variant="ghost" className={`w-full justify-start ${isCollapsed ? 'px-2' : 'px-4'}`}>
-              <FileText className="h-5 w-5" />
-              {!isCollapsed && <span className="ml-2">Log</span>}
+              <Link href="/logs">
+                <FileText className="h-5 w-5" />
+                {!isCollapsed && <span className="ml-2">Logs</span>}
+              </Link>
             </Button>
           </li>
           <li>
             <Button variant="ghost" className={`w-full justify-start ${isCollapsed ? 'px-2' : 'px-4'}`}>
-              <Settings className="h-5 w-5" />
-              {!isCollapsed && <span className="ml-2">Settings</span>}
+              <Link href="/settings">
+                <Settings className="h-5 w-5" />
+                {!isCollapsed && <span className="ml-2">Settings</span>}
+              </Link>
             </Button>
           </li>
         </ul>
       </nav>
       <div className="p-4">
-        <Button variant="ghost" className={`w-full justify-start ${isCollapsed ? 'px-2' : 'px-4'}`}>
+        <Button variant="ghost" className={`w-full justify-start ${isCollapsed ? 'px-2' : 'px-4'}`}
+          onClick={signOut}
+        >
           <LogOut className="h-5 w-5" />
           {!isCollapsed && <span className="ml-2">Logout</span>}
         </Button>
@@ -66,3 +79,5 @@ export default function CollapsibleSidebar() {
     </ div>
   )
 }
+
+export default CollapsibleSidebar;
