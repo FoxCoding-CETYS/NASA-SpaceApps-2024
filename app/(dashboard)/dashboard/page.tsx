@@ -237,38 +237,7 @@ export default function FarmerDashboard() {
                   </CardContent>
                 </Card>
             </div>
-   
-            <Card>
-              <CardHeader>
-                <CardTitle>Predictive Analytics</CardTitle>
-                <CardDescription>AI-powered insights for your farm</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-semibold">Projected Yield</h4>
-                      <p className="text-sm text-muted-foreground">Based on current conditions and historical data</p>
-                    </div>
-                    <div className="text-2xl font-bold">+12%</div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-semibold">Pest Outbreak Probability</h4>
-                      <p className="text-sm text-muted-foreground">For the next 30 days</p>
-                    </div>
-                    <div className="text-2xl font-bold text-yellow-500">Medium</div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-semibold">Optimal Harvest Window</h4>
-                      <p className="text-sm text-muted-foreground">For corn crop</p>
-                    </div>
-                    <div className="text-2xl font-bold">Sep 15 - Sep 30</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+  
             <div className='w-full flex justify-center'>
               <ScaledEviPredictionChart />
             </div>
