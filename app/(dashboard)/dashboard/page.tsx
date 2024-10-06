@@ -19,6 +19,7 @@ import {Dialog,
 
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource"; // Your generated schema
+import  Link  from 'next/link';
 
 const client = generateClient<Schema>();
 
@@ -37,9 +38,27 @@ export default function FarmerDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [latitude, setLatitude] = useState<string>("");  
   const [longitude, setLongitude] = useState<string>(""); 
+  const [locationSet, setLocationSet] = useState(true);
 
   const isFirstRender = useRef(true);
 
+  useEffect(() => {
+    checkLocation();
+  }, []);
+
+  const checkLocation = async () => {
+    const { data } = await client.models.UserSettings.list();
+    if (data.length > 0) {
+      const userSettings = data[0];
+      if (userSettings.latitude === null || userSettings.longitude === null) {
+        setLocationSet(false);
+      } else {
+        setLocationSet(true);
+      }
+    } else {
+      setLocationSet(false);
+    }
+  };
 
   useEffect( () => {   
     const fetchUserSettings = async () => {
@@ -92,7 +111,22 @@ export default function FarmerDashboard() {
     fetchWeatherData();
   }, [latitude, longitude]);
 
+  if (!locationSet) {
+    return (
+      <div className="bg-gray-100 p-4 h-full w-full flex justify-center flex-col content-center space-y-4">
+  <p className="text-center text-2xl text-black">
+    Location isn't set. Please set your location in preferences.
+  </p>
+  <Link href="./preferences">
+    <Button variant="outline" className="max-w-xs mx-auto block">
+      Go to preferences
+    </Button>
+  </Link>
+</div>
 
+      
+    );
+  }
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar would go here */}
