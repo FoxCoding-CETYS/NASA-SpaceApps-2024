@@ -1,5 +1,5 @@
 {
-  "name": "nasa-spaceapps-2024",
+  "name": "aws-amplify-gen2",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,32 +9,37 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-amplify/ui-react": "^6.1.13",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
+    "aws-amplify": "^6.4.0",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.447.0",
-    "next": "14.2.14",
-    "next-auth": "^4.24.8",
+    "next": "14.1.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-form": "^7.53.0",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.5.3",
-    "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@aws-amplify/backend": "^1.2.1",
+    "@aws-amplify/backend-cli": "^1.2.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.14",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "autoprefixer": "^10.4.20",
+    "aws-cdk": "^2",
+    "aws-cdk-lib": "^2",
+    "constructs": "^10.3.0",
+    "esbuild": "^0.23.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.2"
   }
 }
