@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Bell,
   Search,
@@ -40,10 +40,79 @@ import { ToastAction } from "@/components/ui/toast";
 
 const client = generateClient<Schema>();
 
+interface WeatherData {
+  humidity: number;
+  temperature: number;
+  precipitation: number;
+  cloudCover: number;
+}
+
 export default function FarmerDashboard() {
   const [selectedCrop, setSelectedCrop] = useState("corn");
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [latitude, setLatitude] = useState<string>("");
+  const [longitude, setLongitude] = useState<string>("");
   const { toast } = useToast();
   const [locationSet, setLocationSet] = useState(false); // Add this state
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    const fetchUserSettings = async () => {
+      setLoading(true);
+      try {
+        const { data } = await client.models.UserSettings.list();
+        if (data.length > 0) {
+          const userSettings = data[0];
+          setLatitude(userSettings.latitude?.toString() || "");
+          setLongitude(userSettings.longitude?.toString() || "");
+        }
+      } catch (error) {
+        console.error("Error fetching user settings", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserSettings();
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // Set to false after the first render
+      return; // Prevent running on the first render
+    }
+
+    if (!latitude || !longitude) return;
+
+    const fetchWeatherData = async () => {
+      try {
+        const response = await fetch(
+          `/api/weather?latitude=${latitude}&longitude=${longitude}`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log(
+            `/api/weather?latitude=${latitude}&longitude=${longitude}`
+          );
+          setWeatherData(data);
+        } else {
+          console.log(
+            `/api/weather?latitude=${latitude}&longitude=${longitude}`
+          );
+          setError("Failed to fetch weather data");
+        }
+      } catch (error) {
+        setError("An error occurred while fetching weather data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeatherData();
+  }, [latitude, longitude]);
 
   useEffect(() => {
     checkLocation();
@@ -51,14 +120,12 @@ export default function FarmerDashboard() {
 
   const checkLocation = async () => {
     const { data } = await client.models.UserSettings.list();
-    console.log("test: " + JSON.stringify(data, null, 2));
     if (data.length > 0) {
       const userSettings = data[0];
       if (userSettings.latitude === null || userSettings.longitude === null) {
         setLocationSet(false);
         showToast(); // Move the toast logic here
       } else {
-        console.log("mira nomas");
         setLocationSet(true);
       }
     } else {
@@ -89,35 +156,36 @@ export default function FarmerDashboard() {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar would go here */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="flex items-center justify-between p-4 bg-white border-b">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-semibold">Datafarm Dashboard</h1>
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input className="pl-8" placeholder="Search fields, crops..." />
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Bell className="text-gray-500" />
-            <Avatar>
-              <AvatarImage src="/placeholder-farmer.jpg" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <Button variant="ghost">
-              John Doe
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
           <div className="container mx-auto px-6 py-8">
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                Welcome to Datafarm
+            <div className="text-center">
+              <h2 className="text-6xl font-bold text-green-800 mb-2">
+                Welcome
               </h2>
-              <p className="text-gray-600">Revolutionizing Farming with Data</p>
+              <p className="text-gray-600">Revolutionizing farming with Data</p>
             </div>
+            {/* Weather Data Display */}
+            {loading ? (
+              <div>Loading weather data...</div>
+            ) : error ? (
+              <div>{error}</div>
+            ) : (
+              <div className="p-6 bg-gray-100 rounded-lg shadow-md mb-8">
+                <h2 className="text-xl font-bold mb-4">Current Weather</h2>
+                <div className="mb-2">
+                  <strong>Temperature:</strong> {weatherData?.temperature}°C
+                </div>
+                <div className="mb-2">
+                  <strong>Humidity:</strong> {weatherData?.humidity}%
+                </div>
+                <div className="mb-2">
+                  <strong>Precipitation (past 24 hours):</strong>{" "}
+                  {weatherData?.precipitation} mm
+                </div>
+              </div>
+            )}
 
+            {/* Rest of the dashboard (Cards and other sections) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -142,9 +210,9 @@ export default function FarmerDashboard() {
                   <Cloud className="h-4 w-4 text-gray-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">Partly Cloudy</div>
+                  <div className="text-2xl font-bold">Cloud Cover</div>
                   <p className="text-muted-foreground">
-                    High: 75°F | Low: 60°F
+                    {weatherData?.cloudCover}%
                   </p>
                   <p className="text-xs text-muted-foreground mt-2">
                     20% chance of rain
@@ -171,7 +239,6 @@ export default function FarmerDashboard() {
                 </CardContent>
               </Card>
             </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <Card>
                 <CardHeader>
