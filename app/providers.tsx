@@ -2,7 +2,14 @@
 
 import { SessionProvider } from "next-auth/react";
 import React from "react";
+import { Session } from "next-auth";
 
-export default function SessionProviderWrapper({ children, session }: { children: React.ReactNode; session: any }) {
+
+interface SessionProviderWrapperProps {
+  children: React.ReactNode;
+  session: Session | null; // Update the session type to Session | null
+}
+
+export default function SessionProviderWrapper({ children, session }: SessionProviderWrapperProps) {
   return <SessionProvider session={session}>{children}</SessionProvider>;
 }
