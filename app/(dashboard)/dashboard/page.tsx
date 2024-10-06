@@ -149,7 +149,7 @@ export default function FarmerDashboard() {
                   <p className="text-xs text-muted-foreground mt-2">
                   {weatherData?.cloudCover
                   ? `${calculateRainProbability(weatherData.cloudCover)}% chance of rain`
-                  : 'N/A'}
+                  : 'No rain expected'}
                   </p>
                 </CardContent>
               </Card>
