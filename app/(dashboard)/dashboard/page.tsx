@@ -1,17 +1,49 @@
 'use client'
+import React, { useState, useEffect } from 'react';
+import { Bell, Search, ChevronDown, Droplets, Cloud, Bug, Leaf, BarChart2, Zap } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { useState } from 'react'
-import { Bell, Search, ChevronDown, Droplets, Cloud, Bug, Leaf, BarChart2, Zap } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+interface WeatherData {
+  humidity: number;
+  temperature: number;
+  precipitation: number;
+}
 
 export default function FarmerDashboard() {
-  const [selectedCrop, setSelectedCrop] = useState("corn")
+  const [selectedCrop, setSelectedCrop] = useState("corn");
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const latitude = '40.7128';  // Ejemplo de latitud (Nueva York)
+  const longitude = '-74.0060'; 
+
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      try {
+        const response = await fetch(`/api/weather?latitude=${latitude}&longitude=${longitude}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setWeatherData(data);
+        } else {
+          setError('Failed to fetch weather data');
+        }
+      } catch (error) {
+        setError('An error occurred while fetching weather data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeatherData();
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -43,7 +75,28 @@ export default function FarmerDashboard() {
               <h2 className="text-3xl font-bold text-gray-800 mb-4">Welcome to Datafarm</h2>
               <p className="text-gray-600">Revolutionizing Farming with Data</p>
             </div>
+
+            {/* Weather Data Display */}
+            {loading ? (
+              <div>Loading weather data...</div>
+            ) : error ? (
+              <div>{error}</div>
+            ) : (
+              <div className="p-6 bg-gray-100 rounded-lg shadow-md mb-8">
+                <h2 className="text-xl font-bold mb-4">Current Weather</h2>
+                <div className="mb-2">
+                  <strong>Temperature:</strong> {weatherData?.temperature}°C
+                </div>
+                <div className="mb-2">
+                  <strong>Humidity:</strong> {weatherData?.humidity}%
+                </div>
+                <div className="mb-2">
+                  <strong>Precipitation (past 24 hours):</strong> {weatherData?.precipitation} mm
+                </div>
+              </div>
+            )}
             
+            {/* Rest of the dashboard (Cards and other sections) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -228,5 +281,5 @@ export default function FarmerDashboard() {
         </main>
       </div>
     </div>
-  )
+  );
 }
