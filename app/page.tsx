@@ -5,6 +5,8 @@ import Image from "next/image";
 import Sidebar from "../components/ui/sidebar";
 import TopBar from "../components/ui/topbar";
 
+
+
 export default function Home() {
 
   return (
@@ -24,7 +26,7 @@ export default function Home() {
         <main className="flex flex-col gap-8 items-center sm:items-start">
           <div>
             <h1>Welcome, user</h1>
-            <p>Email: email</p>
+            <p>Email: email </p>
           </div>
         </main>
       </div>
