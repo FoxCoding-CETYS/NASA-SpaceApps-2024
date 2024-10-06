@@ -1,9 +1,8 @@
 'use client'
 import React, { useState } from 'react';
-import UsMap from "../../components/ui/UsMap";
+import UsMap from "../../../components/ui/UsMap";
 
 export default function Map() {
-  const [map, setMap] = useState('usa'); // Mapa predeterminado es Estados Unidos
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
