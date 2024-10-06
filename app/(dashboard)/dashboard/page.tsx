@@ -1,17 +1,89 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Bell, Search, ChevronDown, Droplets, Cloud, Bug, Leaf, BarChart2, Zap } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEffect, useState } from "react";
+import {
+  Bell,
+  Search,
+  ChevronDown,
+  Droplets,
+  Cloud,
+  Bug,
+  Leaf,
+  BarChart2,
+  Zap,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { generateClient } from "aws-amplify/data";
+import type { Schema } from "@/amplify/data/resource";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
+import { ToastAction } from "@/components/ui/toast";
+
+const client = generateClient<Schema>();
 
 export default function FarmerDashboard() {
-  const [selectedCrop, setSelectedCrop] = useState("corn")
+  const [selectedCrop, setSelectedCrop] = useState("corn");
+  const { toast } = useToast();
+  const [locationSet, setLocationSet] = useState(false); // Add this state
+
+  useEffect(() => {
+    checkLocation();
+  }, []);
+
+  const checkLocation = async () => {
+    const { data } = await client.models.UserSettings.list();
+    console.log("test: " + JSON.stringify(data, null, 2));
+    if (data.length > 0) {
+      const userSettings = data[0];
+      if (userSettings.latitude === null || userSettings.longitude === null) {
+        setLocationSet(false);
+        showToast(); // Move the toast logic here
+      } else {
+        console.log("mira nomas");
+        setLocationSet(true);
+      }
+    } else {
+      setLocationSet(false);
+      showToast(); // Move the toast logic here
+    }
+  };
+
+  const showToast = () => {
+    toast({
+      title: "Your location is not set.",
+      description: "Please go set it in preferences.",
+      action: (
+        <Link href="/preferences">
+          <ToastAction
+            altText="preferences"
+            style={{ outline: "none", border: "none" }}
+          >
+            Go to preferences
+          </ToastAction>
+        </Link>
+      ),
+      duration: 30000,
+    });
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -40,14 +112,18 @@ export default function FarmerDashboard() {
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
           <div className="container mx-auto px-6 py-8">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Welcome to Datafarm</h2>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                Welcome to Datafarm
+              </h2>
               <p className="text-gray-600">Revolutionizing Farming with Data</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Soil Moisture</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Soil Moisture
+                  </CardTitle>
                   <Droplets className="h-4 w-4 text-blue-500" />
                 </CardHeader>
                 <CardContent>
@@ -60,12 +136,16 @@ export default function FarmerDashboard() {
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Weather Forecast</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Weather Forecast
+                  </CardTitle>
                   <Cloud className="h-4 w-4 text-gray-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">Partly Cloudy</div>
-                  <p className="text-muted-foreground">High: 75°F | Low: 60°F</p>
+                  <p className="text-muted-foreground">
+                    High: 75°F | Low: 60°F
+                  </p>
                   <p className="text-xs text-muted-foreground mt-2">
                     20% chance of rain
                   </p>
@@ -73,12 +153,18 @@ export default function FarmerDashboard() {
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pest Alert</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Pest Alert
+                  </CardTitle>
                   <Bug className="h-4 w-4 text-red-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-red-500">Moderate Risk</div>
-                  <p className="text-muted-foreground">Corn Rootworm detected</p>
+                  <div className="text-2xl font-bold text-red-500">
+                    Moderate Risk
+                  </div>
+                  <p className="text-muted-foreground">
+                    Corn Rootworm detected
+                  </p>
                   <p className="text-xs text-muted-foreground mt-2">
                     Recommended action: Schedule inspection
                   </p>
@@ -90,7 +176,9 @@ export default function FarmerDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>Crop Health Overview</CardTitle>
-                  <CardDescription>Select a crop to view detailed information</CardDescription>
+                  <CardDescription>
+                    Select a crop to view detailed information
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Select value={selectedCrop} onValueChange={setSelectedCrop}>
@@ -128,7 +216,9 @@ export default function FarmerDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>Resource Optimization</CardTitle>
-                  <CardDescription>Recommendations for efficient resource use</CardDescription>
+                  <CardDescription>
+                    Recommendations for efficient resource use
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="water">
@@ -146,7 +236,8 @@ export default function FarmerDashboard() {
                         </p>
                         <h4 className="font-semibold mt-4">Recommendation:</h4>
                         <p className="text-sm">
-                          Increase irrigation by 10% in the north field due to forecasted dry spell.
+                          Increase irrigation by 10% in the north field due to
+                          forecasted dry spell.
                         </p>
                       </div>
                     </TabsContent>
@@ -155,11 +246,13 @@ export default function FarmerDashboard() {
                         <h4 className="font-semibold">Current Usage:</h4>
                         <Progress value={75} />
                         <p className="text-sm text-muted-foreground">
-                          You're using 75% of your planned fertilizer application.
+                          You're using 75% of your planned fertilizer
+                          application.
                         </p>
                         <h4 className="font-semibold mt-4">Recommendation:</h4>
                         <p className="text-sm">
-                          Apply nitrogen-rich fertilizer to the east field within the next 7 days.
+                          Apply nitrogen-rich fertilizer to the east field
+                          within the next 7 days.
                         </p>
                       </div>
                     </TabsContent>
@@ -172,7 +265,8 @@ export default function FarmerDashboard() {
                         </p>
                         <h4 className="font-semibold mt-4">Recommendation:</h4>
                         <p className="text-sm">
-                          Monitor the south field for signs of corn rootworm. Spot treatment may be necessary.
+                          Monitor the south field for signs of corn rootworm.
+                          Spot treatment may be necessary.
                         </p>
                       </div>
                     </TabsContent>
@@ -190,28 +284,40 @@ export default function FarmerDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Predictive Analytics</CardTitle>
-                <CardDescription>AI-powered insights for your farm</CardDescription>
+                <CardDescription>
+                  AI-powered insights for your farm
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-semibold">Projected Yield</h4>
-                      <p className="text-sm text-muted-foreground">Based on current conditions and historical data</p>
+                      <p className="text-sm text-muted-foreground">
+                        Based on current conditions and historical data
+                      </p>
                     </div>
                     <div className="text-2xl font-bold">+12%</div>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-semibold">Pest Outbreak Probability</h4>
-                      <p className="text-sm text-muted-foreground">For the next 30 days</p>
+                      <h4 className="font-semibold">
+                        Pest Outbreak Probability
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        For the next 30 days
+                      </p>
                     </div>
-                    <div className="text-2xl font-bold text-yellow-500">Medium</div>
+                    <div className="text-2xl font-bold text-yellow-500">
+                      Medium
+                    </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-semibold">Optimal Harvest Window</h4>
-                      <p className="text-sm text-muted-foreground">For corn crop</p>
+                      <p className="text-sm text-muted-foreground">
+                        For corn crop
+                      </p>
                     </div>
                     <div className="text-2xl font-bold">Sep 15 - Sep 30</div>
                   </div>
@@ -228,5 +334,5 @@ export default function FarmerDashboard() {
         </main>
       </div>
     </div>
-  )
+  );
 }
