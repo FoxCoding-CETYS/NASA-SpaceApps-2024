@@ -4,7 +4,6 @@
 import { useState } from "react";
 import { Home, FileText, Settings, LogOut, Menu } from "lucide-react";
 import Image from 'next/image'
-import LogoL from '../../app/assets/logo-letters.png'
 import LogoT from '../../app/assets/tractor.png'
 
 export default function TopBar() {
