@@ -134,6 +134,18 @@ export default function FarmerDashboard() {
       
     );
   }
+  function calculatePestRisk(weatherData: WeatherData): string {
+    const { temperature, humidity, precipitation } = weatherData;
+
+    if (temperature > 25 && humidity > 70 && precipitation < 5) {
+      return 'High Risk';
+    } else if (temperature > 20 && humidity > 60 && precipitation < 10) {
+      return 'Medium';
+    } else {
+      return 'Low';
+    }
+  }
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar would go here */}
@@ -195,122 +207,23 @@ export default function FarmerDashboard() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pest Alert</CardTitle>
-                  <Bug className="h-4 w-4 text-red-500" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-red-500">Moderate Risk</div>
-                  <p className="text-muted-foreground">Corn Rootworm detected</p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Recommended action: Schedule inspection
-                  </p>
-                </CardContent>
-              </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Pest Alert</CardTitle>
+                    <Bug className={`h-4 w-4 ${weatherData ? (calculatePestRisk(weatherData) === 'High Risk' ? 'text-red-500' : calculatePestRisk(weatherData) === 'Medium' ? 'text-orange-500' : 'text-yellow-500') : 'text-gray-500'}`} />
+                  </CardHeader>
+                  <CardContent>
+                    <div className={`text-2xl font-bold ${weatherData ? (calculatePestRisk(weatherData) === 'High Risk' ? 'text-red-500' : calculatePestRisk(weatherData) === 'Medium' ? 'text-orange-500' : 'text-yellow-500') : 'text-gray-500'}`}>
+                      {weatherData ? calculatePestRisk(weatherData) : 'Unknown'} Risk
+                    </div>
+                    <p className="text-muted-foreground">Insect pest risk based on current weather conditions</p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Recommended action: Schedule inspection
+                    </p>
+                  </CardContent>
+                </Card>
             </div>
    
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Crop Health Overview</CardTitle>
-                  <CardDescription>Select a crop to view detailed information</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Select value={selectedCrop} onValueChange={setSelectedCrop}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a crop" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="corn">Corn</SelectItem>
-                      <SelectItem value="wheat">Wheat</SelectItem>
-                      <SelectItem value="soybeans">Soybeans</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <div className="mt-4 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span>Growth Stage:</span>
-                      <span className="font-medium">Vegetative</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>Estimated Yield:</span>
-                      <span className="font-medium">180 bu/acre</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>Nutrient Status:</span>
-                      <span className="font-medium text-green-500">Good</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full">
-                    <Leaf className="mr-2 h-4 w-4" />
-                    View Detailed Crop Report
-                  </Button>
-                </CardFooter>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Resource Optimization</CardTitle>
-                  <CardDescription>Recommendations for efficient resource use</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="water">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="water">Water</TabsTrigger>
-                      <TabsTrigger value="fertilizer">Fertilizer</TabsTrigger>
-                      <TabsTrigger value="pesticides">Pesticides</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="water" className="mt-4">
-                      <div className="space-y-2">
-                        <h4 className="font-semibold">Current Usage:</h4>
-                        <Progress value={60} />
-                        <p className="text-sm text-muted-foreground">
-                          You're using 60% of your optimal water allocation.
-                        </p>
-                        <h4 className="font-semibold mt-4">Recommendation:</h4>
-                        <p className="text-sm">
-                          Increase irrigation by 10% in the north field due to forecasted dry spell.
-                        </p>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="fertilizer" className="mt-4">
-                      <div className="space-y-2">
-                        <h4 className="font-semibold">Current Usage:</h4>
-                        <Progress value={75} />
-                        <p className="text-sm text-muted-foreground">
-                          You're using 75% of your planned fertilizer application.
-                        </p>
-                        <h4 className="font-semibold mt-4">Recommendation:</h4>
-                        <p className="text-sm">
-                          Apply nitrogen-rich fertilizer to the east field within the next 7 days.
-                        </p>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="pesticides" className="mt-4">
-                      <div className="space-y-2">
-                        <h4 className="font-semibold">Current Usage:</h4>
-                        <Progress value={40} />
-                        <p className="text-sm text-muted-foreground">
-                          You're using 40% of your expected pesticide amount.
-                        </p>
-                        <h4 className="font-semibold mt-4">Recommendation:</h4>
-                        <p className="text-sm">
-                          Monitor the south field for signs of corn rootworm. Spot treatment may be necessary.
-                        </p>
-                      </div>
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full">
-                    <BarChart2 className="mr-2 h-4 w-4" />
-                    View Full Resource Report
-                  </Button>
-                </CardFooter>
-              </Card>
-            </div>
-
             <Card>
               <CardHeader>
                 <CardTitle>Predictive Analytics</CardTitle>
@@ -342,23 +255,6 @@ export default function FarmerDashboard() {
                 </div>
               </CardContent>
               <CardFooter>
-              <Dialog>
-                <DialogTrigger className='flex w-full'>
-                  <div className='w-full flex justify-center '>
-                    <Zap className="mr-3" />
-                    Run Custom Prediction Model
-                  </div>
-                </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove your data from our servers.
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
               </CardFooter>
             </Card>
           </div>

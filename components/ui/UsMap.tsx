@@ -14,6 +14,7 @@ import {
   GeometryCollection,
   Objects,
 } from 'topojson-specification';
+import { Container, Typography, Box, Paper, LinearProgress, createTheme, ThemeProvider } from '@mui/material';
 
 interface CountyData {
   lng: number;
@@ -26,7 +27,6 @@ interface CountyTopology extends Topology {
     counties: GeometryCollection<GeoJsonProperties>;
   };
 }
-
 
 interface GeoFeature {
   type: string;
@@ -46,6 +46,28 @@ const getColorFromEvi = (evi: number): string => {
   const green = Math.max(0, 255 * (1 + evi));
   return `rgb(${red}, ${green}, 0)`;
 };
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+  typography: {
+    h6: {
+      fontWeight: 600,
+    },
+    body1: {
+      fontSize: '1rem',
+    },
+    body2: {
+      fontSize: '0.875rem',
+    },
+  },
+});
 
 export default function USMap() {
   const [geoData, setGeoData] = useState<Feature<Geometry, GeoJsonProperties>[]>([]);
@@ -134,16 +156,22 @@ export default function USMap() {
   
 
   return (
-    <div>
-      <h2>United States Map</h2>
-
-      {/* Mostrar el nombre del condado seleccionado y su EVI */}
-      {selectedCounty && (
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <h3>{selectedCounty.name}</h3>
-          {selectedCounty.evi !== null && <p>EVI: {selectedCounty.evi}</p>}
-        </div>
-      )}
+    <ThemeProvider theme={theme}>
+      <Container>
+        <Typography variant="body1" align="center" paragraph>
+          Enhanced Vegetation Index is a measure of vegetation greenness and health. It ranges from -1 to
+          +1, with higher values indicating denser and healthier vegetation. EVI is more sensitive to canopy
+          structural variations and less susceptible to atmospheric influences than other vegetation indices.
+        </Typography>
+        {/* Mostrar el nombre del condado seleccionado y su EVI */}
+        {selectedCounty && (
+            <Paper elevation={3} style={{ padding: '10px', marginBottom: '20px', textAlign: 'center', borderRadius: '10px', display: 'inline-block', minWidth: '200px' }}>
+            <Typography variant="h6" style={{ fontWeight: 700 }}>{selectedCounty.name}</Typography>
+            {selectedCounty.evi !== null && (
+              <Typography variant="body2" style={{ color: '#1976d2' }}>EVI: {selectedCounty.evi}</Typography>
+            )}
+            </Paper>
+        )}
 
         <ComposableMap
           width={870}
@@ -155,56 +183,59 @@ export default function USMap() {
             center: [-97, 38], // Adjust as needed
           }}
         >
-        <Geographies geography={usaUrl}>
-          {({ geographies }) =>
-            geographies.map((geo) => {
-              const evi = getEviForCounty(geo);
-              const fillColor = evi !== null ? getColorFromEvi(evi) : "#D6D6DA";
+          <Geographies geography={usaUrl}>
+            {({ geographies }) =>
+              geographies.map((geo) => {
+                const evi = getEviForCounty(geo);
+                const fillColor = evi !== null ? getColorFromEvi(evi) : "#D6D6DA";
 
-              return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  style={{
-                    default: {
-                      fill: fillColor,
-                      outline: "none",
-                    },
-                    hover: {
-                      fill: "#F53",
-                      outline: "none",
-                    },
-                    pressed: {
-                      fill: "#E42",
-                      outline: "none",
-                    },
-                  }}
-                  onClick={() => handleClick(geo)}
-                />
-              );
-            })
-          }
-        </Geographies>
-      </ComposableMap>
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    style={{
+                      default: {
+                        fill: fillColor,
+                        outline: "none",
+                      },
+                      hover: {
+                        fill: "#F53",
+                        outline: "none",
+                      },
+                      pressed: {
+                        fill: "#E42",
+                        outline: "none",
+                      },
+                    }}
+                    onClick={() => handleClick(geo)}
+                  />
+                );
+              })
+            }
+          </Geographies>
+        </ComposableMap>
 
-      {/* Espectro de colores para el EVI */}
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <div
-          style={{
-            width: '80%',
-            height: '30px',
-            margin: '0 auto',
-            background: 'linear-gradient(to right, rgb(255,0,0), rgb(255,255,0), rgb(0,255,0))',
-            borderRadius: '5px',
-          }}
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%', margin: '10px auto' }}>
-          <span>-1</span>
-          <span>0</span>
-          <span>1</span>
-        </div>
-        <p style={{ fontStyle: 'italic' }}>EVI Spectrum (from -1 to 1)</p>
-      </div>
-    </div>
+        {/* Espectro de colores para el EVI */}
+        <Box mt={4} textAlign="center">
+          <Box
+            width="60%"
+            height="20px"
+            mx="auto"
+            style={{
+              background: 'linear-gradient(to right, rgb(255,0,0), rgb(255,255,0), rgb(0,255,0))',
+              borderRadius: '5px',
+            }}
+          />
+          <Box display="flex" justifyContent="space-between" width="60%" mx="auto" mt={1}>
+            <Typography variant="body2" style={{ fontSize: '0.75rem' }}>-1</Typography>
+            <Typography variant="body2" style={{ fontSize: '0.75rem' }}>0</Typography>
+            <Typography variant="body2" style={{ fontSize: '0.75rem' }}>1</Typography>
+          </Box>
+          <Typography variant="body2" fontStyle="italic" style={{ fontSize: '0.75rem' }}>
+            EVI Spectrum (from -1 to 1)
+          </Typography>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
