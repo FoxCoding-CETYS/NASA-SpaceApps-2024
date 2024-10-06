@@ -80,7 +80,7 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Leverage advanced AI models to predict crop yields, pest outbreaks, and optimal harvest times, maximizing your farm's productivity.
+                  Leverage advanced AI models to predict future vegetation health in the region.
                 </p>
               </CardContent>
             </Card>

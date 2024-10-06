@@ -24,8 +24,9 @@ export async function GET(req: Request) {
     const humidity = weather.relativeHumidity;
     const temperature = weather.temperature.value;
     const precipitation = weather.precipitationSummary?.past24Hours?.value ?? 0;
+    const cloudCover = weather.cloudCover;
 
-    return NextResponse.json({ humidity, temperature, precipitation });
+    return NextResponse.json({ humidity, temperature, precipitation,cloudCover });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch weather data' }, { status: 500 });
   }
