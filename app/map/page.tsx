@@ -9,7 +9,7 @@ export default function Map() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black">
-      <h1 className="text-4xl font-bold mb-8">Selecciona un Mapa</h1>
+      <h1 className="text-4xl font-bold mb-8">SELECT A MAP</h1>
       <div className="flex space-x-4 mb-8">
         <button
           onClick={() => setMap('usa')}
@@ -31,13 +31,13 @@ export default function Map() {
       <div className="w-full max-w-4xl">
         {map === 'usa' && (
           <div className="text-center">
-            <h2 className="text-2xl font-semibold mb-4">Mapa de Estados Unidos</h2>
+            <h2 className="text-2xl font-semibold mb-4">The United States Map</h2>
             <UsMap />
           </div>
         )}
         {map === 'world' && (
           <div className="text-center">
-            <h2 className="text-2xl font-semibold mb-4">Mapa del Mundo</h2>
+            <h2 className="text-2xl font-semibold mb-4">World Map</h2>
             <WorldMap />
           </div>
         )}
