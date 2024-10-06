@@ -42,7 +42,7 @@ export default function Settings() {
                                 <Input className="w-full sm:w-2/3" placeholder={newUser.zipcode.toString()} />
                             </div>
                         </div>
-                        <button className="mt-8 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300">Save Changes</button>
+                        <button className="mt-8 px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition duration-300">Save Changes</button>
                     </div>
                 </div>
             </div>
