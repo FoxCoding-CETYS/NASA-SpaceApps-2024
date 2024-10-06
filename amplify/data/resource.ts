@@ -21,6 +21,15 @@ const schema = a.schema({
     .authorization((allow) => [
       allow.owner().to(['create', 'read', 'update', 'delete']) // Only the owner can CRUD the entry
     ]),
+
+  UserSettings: a
+    .model({
+      latitude: a.float(),        // Latitude
+      longitude: a.float(),       // Longitude
+    })
+    .authorization((allow) => [
+      allow.owner().to(['create', 'read', 'update', 'delete']) // Only the owner can CRUD the settings
+    ]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
