@@ -47,7 +47,7 @@ export default function Settings () {
                             </div>
                             <div className="flex flex-col sm:flex-row items-center">
                                 <label className="w-full sm:w-1/3 text-left mb-2 sm:mb-0">Password</label>
-                                <Input className="w-full sm:w-2/3" type="password" placeholder={newUser.password} />
+                                <Input className="w-full sm:w-2/3" type="password" placeholder='password' />
                             </div>
                             <div className="flex flex-col sm:flex-row items-center">
                                 <label className="w-full sm:w-1/3 text-left mb-2 sm:mb-0">Zip Code</label>
