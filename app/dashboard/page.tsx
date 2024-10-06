@@ -1,9 +1,9 @@
 // pages/index.tsx
-import Sidebar from "../components/ui/sidebar";
-import TopBar from "../components/ui/topbar";
+import Sidebar from "../../components/ui/sidebar";
+import TopBar from "../../components/ui/topbar";
 import React from "react";
 
-export default function Home() {
+export default function Dashboard() {
   return (
     <>
       <div className="flex flex-col md:flex-row min-h-screen">
