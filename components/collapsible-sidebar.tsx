@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, LayoutDashboard, FileText, Settings, LogOut } from "lucide-react"
+import { ChevronLeft, ChevronRight, LayoutDashboard, FileText, Settings, LogOut, Map} from "lucide-react"
 import LogoT from '../app/assets/tractor-short.png'
 import LogoL from '../app/assets/logo-white.png'
 import Link from 'next/link'
@@ -38,6 +38,7 @@ const CollapsibleSidebar: React.FC<SidebarProps> = ({ signOut }) => {
     { href: '/dashboard', icon: <LayoutDashboard className="h-5 w-5" />, label: 'Dashboard' },
     { href: '/logs', icon: <FileText className="h-5 w-5" />, label: 'Logs' },
     { href: '/preferences', icon: <Settings className="h-5 w-5" />, label: 'Preferences' },
+    { href: '/map', icon: <Map className="h-5 w-5" />, label: 'USA Map Info' },
   ]
 
   return (
