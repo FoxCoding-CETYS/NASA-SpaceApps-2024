@@ -33,12 +33,12 @@ export default function Logs() {
         try {
             await client.models.LogEntry.create({
                 date: format(date, 'yyyy-MM-dd'),
-                location,
-                cropType,
-                soilCondition,
-                weather,
-                pestObservations,
-                generalNotes,
+                location: location,
+                cropType: cropType,
+                soilCondition: soilCondition,
+                weather: weather,
+                pestObservations: pestObservations,
+                generalNotes: generalNotes,
             });
             console.log('Log entry created successfully');
 

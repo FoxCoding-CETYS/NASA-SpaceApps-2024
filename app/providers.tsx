@@ -2,7 +2,6 @@
 'use client'
 import React from 'react'
 import { NextUIProvider } from '@nextui-org/react'
-import Sidebar from "../components/ui/sidebar";
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
