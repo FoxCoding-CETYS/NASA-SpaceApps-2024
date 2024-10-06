@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     const weather = data.results[0];
     const humidity = weather.relativeHumidity;
     const temperature = weather.temperature.value;
-    const precipitation = weather.precipitationSummary?.past24Hours?.value ?? 0;
+    const precipitation = weather.precipitationSummary.pastHour.value ?? 0;
     const cloudCover = weather.cloudCover;
 
     return NextResponse.json({ humidity, temperature, precipitation,cloudCover });

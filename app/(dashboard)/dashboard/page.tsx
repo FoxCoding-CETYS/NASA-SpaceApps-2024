@@ -14,6 +14,13 @@ import type { Schema } from "@/amplify/data/resource"; // Your generated schema
 
 const client = generateClient<Schema>();
 
+const calculateRainProbability = (cloudCover: number): number => {
+  if (cloudCover <= 20) return 5; 
+  if (cloudCover >= 90) return 90; 
+
+  return Math.min(90, Math.pow(cloudCover / 10, 2)); 
+};
+
 
 interface WeatherData {
   humidity: number;
@@ -140,7 +147,9 @@ export default function FarmerDashboard() {
                   <div className="text-2xl font-bold">Cloud Cover</div>
                   <p className="text-muted-foreground">{weatherData?.cloudCover}%</p>
                   <p className="text-xs text-muted-foreground mt-2">
-                    20% chance of rain
+                  {weatherData?.cloudCover
+                  ? `${calculateRainProbability(weatherData.cloudCover)}% chance of rain`
+                  : 'N/A'}
                   </p>
                 </CardContent>
               </Card>
