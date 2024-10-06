@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useRef  } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Bell, Search, ChevronDown, Droplets, Cloud, Bug, Leaf, BarChart2, Zap } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,15 +33,15 @@ const chartConfig = {
 
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource"; // Your generated schema
-import  Link  from 'next/link';
+import Link from 'next/link';
 
 const client = generateClient<Schema>();
 
 const calculateRainProbability = (cloudCover: number): number => {
-  if (cloudCover <= 20) return 5; 
-  if (cloudCover >= 90) return 90; 
+  if (cloudCover <= 20) return 5;
+  if (cloudCover >= 90) return 90;
 
-  return Math.min(90, Math.pow(cloudCover / 10, 2)); 
+  return Math.min(90, Math.pow(cloudCover / 10, 2));
 };
 
 
@@ -57,8 +57,8 @@ export default function FarmerDashboard() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [latitude, setLatitude] = useState<string>("");  
-  const [longitude, setLongitude] = useState<string>(""); 
+  const [latitude, setLatitude] = useState<string>("");
+  const [longitude, setLongitude] = useState<string>("");
   const [locationSet, setLocationSet] = useState(true);
 
   const isFirstRender = useRef(true);
@@ -81,20 +81,20 @@ export default function FarmerDashboard() {
     }
   };
 
-  useEffect( () => {   
+  useEffect(() => {
     const fetchUserSettings = async () => {
       setLoading(true);
       try {
         const { data } = await client.models.UserSettings.list();
         if (data.length > 0) {
-          const userSettings = data[0]; 
+          const userSettings = data[0];
           setLatitude(userSettings.latitude?.toString() || "");
           setLongitude(userSettings.longitude?.toString() || "");
         }
       } catch (error) {
         console.error("Error fetching user settings", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -107,14 +107,14 @@ export default function FarmerDashboard() {
       return; // Prevent running on the first render
     }
 
-    if (!latitude || !longitude) return; 
+    if (!latitude || !longitude) return;
 
 
     const fetchWeatherData = async () => {
       try {
         const response = await fetch(`/api/weather?latitude=${latitude}&longitude=${longitude}`);
         const data = await response.json();
-  
+
         if (response.ok) {
           console.log(`/api/weather?latitude=${latitude}&longitude=${longitude}`)
           setWeatherData(data);
@@ -135,17 +135,17 @@ export default function FarmerDashboard() {
   if (!locationSet) {
     return (
       <div className="bg-gray-100 p-4 h-full w-full flex justify-center flex-col content-center space-y-4">
-  <p className="text-center text-2xl text-black">
-    Location isn't set. Please set your location in preferences.
-  </p>
-  <Link href="./preferences">
-    <Button variant="outline" className="max-w-xs mx-auto block">
-      Go to preferences
-    </Button>
-  </Link>
-</div>
+        <p className="text-center text-2xl text-black">
+          Location isn't set. Please set your location in preferences.
+        </p>
+        <Link href="./preferences">
+          <Button variant="outline" className="max-w-xs mx-auto block">
+            Go to preferences
+          </Button>
+        </Link>
+      </div>
 
-      
+
     );
   }
   function calculatePestRisk(weatherData: WeatherData): string {
@@ -190,7 +190,7 @@ export default function FarmerDashboard() {
                 </div>
               </div>
             )}
-            
+
             {/* Rest of the dashboard (Cards and other sections) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               <Card>
@@ -215,31 +215,31 @@ export default function FarmerDashboard() {
                   <div className="text-2xl font-bold">Cloud Cover</div>
                   <p className="text-muted-foreground">{weatherData?.cloudCover}%</p>
                   <p className="text-xs text-muted-foreground mt-2">
-                  {weatherData?.cloudCover
-                  ? `${calculateRainProbability(weatherData.cloudCover)}% chance of rain`
-                  : 'No rain expected'}
+                    {weatherData?.cloudCover
+                      ? `${calculateRainProbability(weatherData.cloudCover)}% chance of rain`
+                      : 'No rain expected'}
                   </p>
                 </CardContent>
               </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Pest Alert</CardTitle>
-                    <Bug className={`h-4 w-4 ${weatherData ? (calculatePestRisk(weatherData) === 'High Risk' ? 'text-red-500' : calculatePestRisk(weatherData) === 'Medium' ? 'text-orange-500' : 'text-yellow-500') : 'text-gray-500'}`} />
-                  </CardHeader>
-                  <CardContent>
-                    <div className={`text-2xl font-bold ${weatherData ? (calculatePestRisk(weatherData) === 'High Risk' ? 'text-red-500' : calculatePestRisk(weatherData) === 'Medium' ? 'text-orange-500' : 'text-yellow-500') : 'text-gray-500'}`}>
-                      {weatherData ? calculatePestRisk(weatherData) : 'Unknown'} Risk
-                    </div>
-                    <p className="text-muted-foreground">Insect pest risk based on current weather conditions</p>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Recommended action: Schedule inspection
-                    </p>
-                  </CardContent>
-                </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Pest Alert</CardTitle>
+                  <Bug className={`h-4 w-4 ${weatherData ? (calculatePestRisk(weatherData) === 'High Risk' ? 'text-red-500' : calculatePestRisk(weatherData) === 'Medium' ? 'text-orange-500' : 'text-yellow-500') : 'text-gray-500'}`} />
+                </CardHeader>
+                <CardContent>
+                  <div className={`text-2xl font-bold ${weatherData ? (calculatePestRisk(weatherData) === 'High Risk' ? 'text-red-500' : calculatePestRisk(weatherData) === 'Medium' ? 'text-orange-500' : 'text-yellow-500') : 'text-gray-500'}`}>
+                    {weatherData ? calculatePestRisk(weatherData) : 'Unknown'} Risk
+                  </div>
+                  <p className="text-muted-foreground">Insect pest risk based on current weather conditions</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Recommended action: Schedule inspection
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-  
+
             <div className='w-full flex justify-center'>
-              <ScaledEviPredictionChart />
+              <ScaledEviPredictionChart longitude={longitude} latitude={latitude} />
             </div>
           </div>
         </main>

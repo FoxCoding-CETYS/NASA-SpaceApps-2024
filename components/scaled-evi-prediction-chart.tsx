@@ -39,15 +39,17 @@ interface PredictionData {
   prediction: number
 }
 
-export default function Component() {
+export default function Component({ longitude, latitude }: { longitude: string, latitude: string }) {
   const [data, setData] = useState<PredictionData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    if (!latitude || !longitude) return;
+
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://evipred2.purplemoss-24dee846.westus.azurecontainerapps.io/predict?latitude=32.6341947935623&longitude=-115.44436679674631"
+          `https://evipred2.purplemoss-24dee846.westus.azurecontainerapps.io/predict?latitude=${latitude}&longitude=${longitude}`
         )
         if (!response.ok) {
           throw new Error("Network response was not ok")
@@ -60,7 +62,7 @@ export default function Component() {
             EVI: item.EVI / 10000,
           }))
           .sort((a: PredictionData, b: PredictionData) => a.dayofyear - b.dayofyear)
-          setData(scaledData)
+        setData(scaledData)
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
@@ -69,7 +71,7 @@ export default function Component() {
     }
 
     fetchData()
-  }, [])
+  }, [longitude, latitude])
 
   const formatDate = (dayofyear: number, year: number) => {
     const date = new Date(year, 0, dayofyear)
@@ -177,9 +179,6 @@ export default function Component() {
             </ResponsiveContainer>
           </ChartContainer>
         )}
-        <div className="mt-4 text-center text-sm text-muted-foreground">
-          Impulsado por IA y datos satelitales MODIS de NASA
-        </div>
       </CardContent>
     </Card>
   )

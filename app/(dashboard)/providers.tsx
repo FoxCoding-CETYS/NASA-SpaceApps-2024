@@ -18,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <Authenticator>
       {({ signOut }) => (
         <NextUIProvider>
-          <div className="flex h-screen flex-nowrap">
+          <div className="flex h-screen flex-nowrap overflow-y-hidden">
             <CollapsibleSidebar signOut={signOut || (() => { })} />
             <main className="flex-1 min-w-0 h-full overflow-auto">
               {children}

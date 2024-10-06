@@ -71,7 +71,7 @@ export default function Logs() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-green-50 p-4 md:p-8">
+        <div className="h-full bg-green-50 p-4 md:p-8">
             <h1 className="text-4xl font-bold text-green-800 mb-8">Farm Log</h1>
 
             {/* Log Entry Creation Form */}
