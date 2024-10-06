@@ -18,7 +18,7 @@ export default function TopBar() {
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden p-2 rounded-lg hover:bg-gray-200 transition-colors"
       >
-        <Menu size={24} className='text-green-800' />
+        <Menu size={24} className='text-green-800'/>
       </button>
 
       {/* Mobile Menu */}
