@@ -60,9 +60,9 @@ const CollapsibleSidebar: React.FC<sidebarProps> = ({ signOut }) => {
           </li>
           <li>
             <Button variant="ghost" className={`w-full justify-start ${isCollapsed ? 'px-2' : 'px-4'}`}>
-              <Link href="/settings">
+              <Link href="/preferences">
                 <Settings className="h-5 w-5" />
-                {!isCollapsed && <span className="ml-2">Settings</span>}
+                {!isCollapsed && <span className="ml-2">Preferences</span>}
               </Link>
             </Button>
           </li>

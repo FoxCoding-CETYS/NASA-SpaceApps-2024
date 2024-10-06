@@ -20,6 +20,7 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@radix-ui/react-toast": "^1.2.2",
     "aws-amplify": "^6.4.0",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
@@ -31,6 +32,7 @@
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
+    "react-hook-form": "^7.53.0",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7"
